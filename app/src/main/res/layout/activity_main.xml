@@ -5,20 +5,39 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/box_inset_layout_padding"
-    tools:context=".MainActivity"
+    tools:context="com.example.isowatch.MainActivity"
     tools:deviceIds="wear">
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/inner_frame_layout_padding"
-        app:layout_boxedEdges="all">
+        android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/text"
-            android:layout_width="wrap_content"
+            android:id="@+id/title"
+            android:layout_width="126dp"
             android:layout_height="wrap_content"
-            android:text="@string/hello_world" />
+            android:text="@string/app_name"
+            android:textAlignment="center"
+            android:textFontWeight="600"
+            android:textSize="16sp"
+            android:textColor="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
 
-    </FrameLayout>
+        <Button
+            android:id="@+id/buttonStart"
+            android:layout_width="160dp"
+            android:layout_height="38dp"
+            android:background="@drawable/button_background"
+            android:text="@string/StartMonitoring"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.wear.widget.BoxInsetLayout>
