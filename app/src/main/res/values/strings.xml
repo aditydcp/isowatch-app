@@ -5,6 +5,9 @@
     values-round/strings.xml for round devices.
     -->
     <string name="StartMonitoring">Mulai Pemeriksaan</string>
+    <string name="CreatePemeriksaan">Buat Sesi</string>
+    <string name="CreateMessage">Sesi sudah berhasil dibuat</string>
+    <string name="CreateNotice">Mohon buat sesi terlebih dahulu</string>
     <string name="idPemeriksaan">ID Pemeriksaan: </string>
     <string name="idValue">0</string>
 
