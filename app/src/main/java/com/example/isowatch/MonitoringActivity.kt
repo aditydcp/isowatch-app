@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat
 import com.example.isowatch.databinding.ActivityMonitoringBinding
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.samsung.android.service.health.tracking.HealthTrackerException
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.concurrent.atomic.AtomicBoolean
 
 class MonitoringActivity: Activity() {
@@ -30,10 +32,14 @@ class MonitoringActivity: Activity() {
     private lateinit var connectionManager: ConnectionManager
     private lateinit var heartRateListener: HeartRateListener
     private lateinit var spO2Listener: SpO2Listener
+    private var idPemeriksaan = "0"
     private var connected = false
     private var permissionGranted = false
     private var previousSpO2Status = SpO2Status.INITIAL_STATUS
     private var heartRateDataLast = HeartRateData()
+    private var heartRateDataStore = mutableListOf<Int>()
+    private var spO2DataStore = 0
+    private lateinit var timestamp: String
     private lateinit var txtHeartRate: TextView
     private lateinit var txtStatus: TextView
     private lateinit var txtSpo2: TextView
@@ -84,6 +90,12 @@ class MonitoringActivity: Activity() {
                 } else {
                     txtHeartRate.text = getString(R.string.HeartRateDefaultValue)
                 }
+                // store values when calculating
+                if (previousSpO2Status == SpO2Status.CALCULATING) {
+                    if (hrData.status === HeartRateStatus.HR_STATUS_FIND_HR) {
+                        heartRateDataStore.add(hrData.hr)
+                    }
+                }
             })
         }
 
@@ -132,8 +144,10 @@ class MonitoringActivity: Activity() {
                         Log.i(tag, "SpO2 measured: $spO2Value")
                         butStart.setText(R.string.StartLabel)
                         measurementProgress.setProgress(measurementProgress.max, true)
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                     }
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    spO2DataStore = spO2Value
+                    sendHealthPoint()
                 }
             }
         }
@@ -232,7 +246,7 @@ class MonitoringActivity: Activity() {
             createConnectionManager()
         }
 
-        val idPemeriksaan = intent?.extras?.getString("idPemeriksaan").toString()
+        idPemeriksaan = intent?.extras?.getString("idPemeriksaan").toString()
         if(idPemeriksaan.isNotEmpty()){
             runOnUiThread {
                 txtId.text = idPemeriksaan
@@ -360,5 +374,44 @@ class MonitoringActivity: Activity() {
             return true
         }
         return false
+    }
+
+    private fun sendHealthPoint() {
+        Log.d(tag, "entering sendHealthPoint()")
+        // get current time
+        timestamp = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME).toString()
+
+        // get avg heart rate in the measured time span
+        var totalCapture = 0
+        var avgHeartRate = 0
+        for (data in heartRateDataStore) {
+            totalCapture += data
+        }
+        if (heartRateDataStore.size > 0) avgHeartRate = totalCapture / heartRateDataStore.size
+
+        // call the service
+        val healthPointService = HealthPointService()
+        val healthPoint = HealthPoint(
+            _id = null,
+            idPemeriksaan = idPemeriksaan,
+            timestamp = timestamp,
+            heartRate = avgHeartRate,
+            diastolicBloodPressure = 0,
+            sistolicBloodPressure = 0,
+            bloodOxygen = spO2DataStore,
+            __v = null,
+        )
+
+        healthPointService.addHealthPoint(healthPoint) {
+            if (it?.result != null) {
+                Log.i(tag, "Data berhasil terkirim!")
+            } else {
+                Log.e(tag,"Error creating Pemeriksaan")
+            }
+            Log.i(tag,"result: $it")
+        }
+
+        heartRateDataStore.clear()
+        spO2DataStore = 0
     }
 }

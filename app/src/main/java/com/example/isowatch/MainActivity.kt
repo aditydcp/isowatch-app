@@ -50,11 +50,6 @@ class MainActivity : Activity() {
                 // make a Create Pemeriksaan API Call
                 createPemeriksaan()
             }
-            Toast.makeText(
-                applicationContext,
-                R.string.CreateMessage,
-                Toast.LENGTH_SHORT
-            )
         }
 
         binding.root.findViewById<Button>(R.id.buttonStart).setOnClickListener {
@@ -69,8 +64,8 @@ class MainActivity : Activity() {
                 Toast.makeText(
                     applicationContext,
                     R.string.CreateNotice,
-                    Toast.LENGTH_SHORT
-                )
+                    Toast.LENGTH_LONG
+                ).show()
             }
         }
     }
@@ -88,8 +83,18 @@ class MainActivity : Activity() {
         pemeriksaanService.createPemeriksaan(pemeriksaan) {
             if (it?.idPemeriksaan != null) {
                 idPemeriksaan = it.idPemeriksaan
+                Toast.makeText(
+                    applicationContext,
+                    R.string.CreateMessage,
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
                 Log.e(tag,"Error creating Pemeriksaan")
+                Toast.makeText(
+                    applicationContext,
+                    R.string.FailedMessage,
+                    Toast.LENGTH_LONG
+                ).show()
             }
             Log.i(tag,"result: $it")
         }
