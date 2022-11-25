@@ -14,6 +14,7 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.work.WorkManager
 import com.example.isowatch.databinding.ActivityMonitoringBinding
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.samsung.android.service.health.tracking.HealthTrackerException
@@ -27,6 +28,7 @@ class MonitoringActivity: Activity() {
     private val MEASUREMENT_DURATION = 30000
     private val MEASUREMENT_TICK = 250
 
+    private lateinit var workManager: WorkManager
     private var isMeasurementRunning = AtomicBoolean(false)
     lateinit var uiUpdateThread: Thread
     private lateinit var connectionManager: ConnectionManager
@@ -211,6 +213,10 @@ class MonitoringActivity: Activity() {
         }
     }
 
+//    internal fun AutoMeasure() {
+//        workManager.enqueue(PeriodicWorkRequestBuilder<MonitoringWorker>(10))
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -218,6 +224,8 @@ class MonitoringActivity: Activity() {
 
         val binding = ActivityMonitoringBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        WorkManager.getInstance(application)
 
         txtHeartRate = binding.txtHeartRate
         txtStatus = binding.txtStatus
