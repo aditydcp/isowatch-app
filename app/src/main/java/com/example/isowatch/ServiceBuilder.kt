@@ -8,7 +8,7 @@ object ServiceBuilder {
     private val client = OkHttpClient.Builder().build()
 
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://isowatch.herokuapp.com")
+        .baseUrl("https://isowatch-web.up.railway.app")
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
