@@ -1,4 +1,4 @@
-# IsoWatch Front-end
+# IsoWatch App
 
 [![Status badge](https://img.shields.io/badge/status-completed-blue.svg)](https://shields.io/)
 
