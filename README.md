@@ -8,11 +8,7 @@ Samsung Privileged SDK is used on this repository and is **not included** here. 
 
 This project is not yet 100% complete. Our targets can be found on the **[issues](https://github.com/aditydcp/isowatch-app/issues)**.
 
-*Note*
-
-Some things might change or not work due to Heroku new policy effective per Nov 28, 2022.
-
-*Last deployed: Nov 25, 2022*
+*Last deployed: Jan 10, 2023*
 
 ## About the Project
 
